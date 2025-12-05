@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - FreshMarket</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .user-greeting {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .order-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--glass-border);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .order-total {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .order-items {
+            list-style: none;
+        }
+
+        .order-items li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .order-items li:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <div class="logo">FreshMarket</div>
+            <a href="index.html" style="text-decoration: none; color: var(--text-light); font-size: 0.9rem;">← Back to
+                Shop</a>
+        </header>
+
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="user-greeting" id="greeting">Hello, User</div>
+                <form action="/logout" method="post" style="margin: 0;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+
+            <h2 style="margin-bottom: 1.5rem;">Your Orders</h2>
+            <div id="orders-list">
+                <div style="text-align: center; color: var(--text-light);">Loading orders...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadProfile() {
+            try {
+                // Fetch User Info
+                const userResponse = await fetch('/api/orders/auth/me');
+                if (userResponse.ok) {
+                    const user = await userResponse.json();
+                    document.getElementById('greeting').textContent = `Hello, ${user.username}`;
+                }
+
+                // Fetch Orders
+                const ordersResponse = await fetch('/api/orders/my');
+                if (ordersResponse.ok) {
+                    const orders = await ordersResponse.json();
+                    renderOrders(orders);
+                } else {
+                    document.getElementById('orders-list').innerHTML = '<p>No orders found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('orders-list').innerHTML = '<p>Failed to load profile.</p>';
+            }
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById('orders-list');
+            if (orders.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-light);">You haven\'t placed any orders yet.</p>';
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <span class="order-id">Order #${order.id}</span>
+                        <span>${new Date(order.orderDate).toLocaleDateString()}</span>
+                    </div>
+                    <ul class="order-items">
+                        ${order.items.map(item => `
+                            <li>
+                                <span>${item.productName} (x${item.quantity})</span>
+                                <span>₹${(item.price * item.quantity).toFixed(2)}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                    <div style="margin-top: 1rem; text-align: right;">
+                        Total: <span class="order-total">₹${order.totalAmount.toFixed(2)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfile);
+    </script>
+</body>
+
+</html>

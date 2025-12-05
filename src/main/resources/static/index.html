@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FreshMarket | Premium Grocery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <div class="logo">FreshMarket</div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <div id="user-info" style="display: flex; align-items: center; gap: 10px;">
+                    <!-- User info injected by JS -->
+                </div>
+                <div class="cart-icon" onclick="toggleCart()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                    <span id="cart-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1>Fresh Groceries, <br>Delivered to Your Doorstep.</h1>
+                <p>Experience the finest quality organic produce.</p>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search for products (e.g., 'Apple', 'Milk')..."
+                        oninput="filterProducts()">
+                </div>
+            </section>
+
+            <div class="product-grid" id="product-grid">
+                <!-- Products will be loaded here -->
+                <div class="loading">Loading products...</div>
+            </div>
+        </main>
+
+        <div class="cart-sidebar" id="cart-sidebar">
+            <div class="cart-header">
+                <h2>Your Cart</h2>
+                <button class="close-cart" onclick="toggleCart()">&times;</button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be here -->
+                <div class="empty-cart">Your cart is empty.</div>
+            </div>
+            <div class="cart-footer">
+                <div class="total">
+                    <span>Total</span>
+                    <span id="cart-total">₹0.00</span>
+                </div>
+                <button class="checkout-btn" onclick="checkout()">Checkout</button>
+            </div>
+        </div>
+        <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
