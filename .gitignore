@@ -9,6 +9,11 @@ mvnw
 mvnw.cmd
 .idea/
 *.iml
-.vscode/
 *.swp
 .DS_Store
+
+### VS Code ###
+.vscode/
+
+### Database ###
+data/
